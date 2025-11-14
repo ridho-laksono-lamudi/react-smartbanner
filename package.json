@@ -11,8 +11,8 @@
   },
   "main": "dist/main.js",
   "peerDependencies": {
-    "react": "16.x",
-    "react-dom": "16.x"
+    "react": ">=16.x <=18.x",
+    "react-dom": ">=16.x <=18.x"
   },
   "dependencies": {
     "cookie-cutter": "^0.1.1",
@@ -37,7 +37,7 @@
     "detect-port": "^1.0.7",
     "dotenv": "^4.0.0",
     "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.7.0",
+    "enzyme-adapter-react-18": "^1.0.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb": "~17.1.0",
     "eslint-config-airbnb-base": "~13.1.0",
