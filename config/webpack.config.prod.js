@@ -5,9 +5,9 @@ const paths = require('./paths');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const safeParser = require('postcss-safe-parser');
+const TerserPlugin = require('terser-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const getClientEnvironment = require('./env');
 
@@ -75,12 +75,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: paths.appSrc,
-      },
-      {
         exclude: [
           /\.html$/,
           /\.(js|jsx)$/,
@@ -108,7 +102,14 @@ module.exports = {
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader?outputStyle=expanded',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                outputStyle: 'expanded',
+              },
+            },
+          },
         ],
       },
       {
@@ -119,28 +120,19 @@ module.exports = {
   },
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
+      new TerserPlugin({
         parallel: true,
-        uglifyOptions: {
+        terserOptions: {
           compress: true,
-          ecma: 6,
+          ecma: 2015,
           mangle: true,
-          output: {
+          format: {
             comments: false,
             beautify: false,
           },
         },
-        sourceMap: false,
       }),
-      new OptimizeCssAssetsPlugin({
-        cssProcessorOptions: {
-          parser: safeParser,
-          discardComments: {
-            removeAll: true,
-          },
-        },
-      }),
+      new CssMinimizerPlugin(),
     ],
   },
 
@@ -174,11 +166,14 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'main.css',
     }),
-    new CopyWebpackPlugin([{ from: 'src/icon.png', to: './' }]),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'src/icon.png', to: './' }],
+    }),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      context: paths.appSrc,
+      emitWarning: true,
+      failOnError: false,
+    }),
   ],
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
 };

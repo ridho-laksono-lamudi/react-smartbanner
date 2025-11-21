@@ -6,6 +6,8 @@ const path = require('path');
 module.exports = {
   process(src, filename) {
     // eslint-disable-next-line prefer-template
-    return 'module.exports = ' + JSON.stringify(path.basename(filename)) + ';';
+    return {
+      code: `module.exports = ${  JSON.stringify(path.basename(filename))  };`,
+    };
   },
 };

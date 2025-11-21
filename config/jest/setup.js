@@ -1,28 +1,30 @@
-import jsdom from 'jsdom';
+// Add TextEncoder/TextDecoder for Node.js environment
+const { TextEncoder, TextDecoder } = require('util');
 
-window.__SERVER__ = false;
-window.__DEVELOPMENT__ = false;
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
 
-// Define some html to be our basic document
-// JSDOM will consume this and act as if we were in a browser
-const DEFAULT_HTML = '<!doctype html><html><body></body></html>';
-
-// Define some variables to make it look like we're a browser
-// First, use JSDOM's fake DOM as the document
-const doc = jsdom.jsdom(DEFAULT_HTML);
-
-global.document = doc;
-
-// Set up a mock window
-global.window = doc.defaultView;
-
-// Allow for things like window.location
-global.navigator = window.navigator;
+// Set up global variables for the app
+global.__SERVER__ = false;
+global.__DEVELOPMENT__ = false;
 
 const DATE_TO_USE = new Date('2017-05-11');
 const _Date = Date;
 
-global.Date = jest.fn(() => DATE_TO_USE);
-global.Date.UTC = _Date.UTC;
-global.Date.parse = _Date.parse;
-global.Date.now = _Date.now;
+// Create a proper Date mock that preserves all Date functionality
+class MockDate extends _Date {
+  constructor(...args) {
+    if (args.length === 0) {
+      super(DATE_TO_USE);
+    } else {
+      super(...args);
+    }
+  }
+}
+
+// Copy all static methods
+MockDate.UTC = _Date.UTC;
+MockDate.parse = _Date.parse;
+MockDate.now = jest.fn(() => DATE_TO_USE.getTime());
+
+global.Date = MockDate;

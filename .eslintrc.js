@@ -1,6 +1,12 @@
 module.exports = {
   extends: ['eslint-config-airbnb', 'prettier'],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    requireConfigFile: false,
+    babelOptions: {
+      presets: ['@babel/preset-react'],
+    },
+  },
   env: {
     browser: true,
     node: true,
@@ -14,7 +20,7 @@ module.exports = {
         'static-methods',
         'lifecycle',
         '/^UNSAFE_/',
-        'everything-else'
+        'everything-else',
       ],
     }],
     'prefer-destructuring': 'off',
@@ -35,7 +41,6 @@ module.exports = {
     'newline-after-var': ['error', 'always'],
     'newline-before-return': 'error',
     'comma-dangle': ['error', 'always-multiline'], // https://github.com/airbnb/javascript/commit/788208295469e19b806c06e01095dc8ba1b6cdc9
-    indent: ['error', 2, { SwitchCase: 1 }],
     'no-console': 0,
     'no-alert': 0,
     'no-underscore-dangle': 'off',
@@ -86,27 +91,6 @@ module.exports = {
           '*.js',
         ],
         optionalDependencies: false,
-      },
-    ],
-    indent: [
-      'error',
-      2,
-      {
-        SwitchCase: 1,
-        VariableDeclarator: 1,
-        outerIIFEBody: 1,
-        MemberExpression: 1,
-        // CallExpression: {
-        // parameters: null,
-        // },
-        FunctionDeclaration: {
-          parameters: 1,
-          body: 1,
-        },
-        FunctionExpression: {
-          parameters: 1,
-          body: 1,
-        },
       },
     ],
     'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],

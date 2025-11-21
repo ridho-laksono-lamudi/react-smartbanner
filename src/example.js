@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import SmartBanner from 'react-smartbanner'; // eslint-disable-line import/no-extraneous-dependencies
 import cookie from 'cookie-cutter';
 
@@ -13,6 +13,7 @@ class DemoComponent extends Component {
     };
   }
 
+  // eslint-disable-next-line class-methods-use-this
   deleteCookie = () => {
     cookie.set('smartbanner-closed', null, { path: '/', expires: new Date(0) });
     cookie.set('smartbanner-installed', null, {
@@ -136,4 +137,6 @@ class DemoComponent extends Component {
   }
 }
 
-ReactDOM.render(<DemoComponent />, document.getElementById('content'));
+const root = createRoot(document.getElementById('content'));
+
+root.render(<DemoComponent />);

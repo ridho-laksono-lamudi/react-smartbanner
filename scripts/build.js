@@ -119,11 +119,26 @@ recursive(paths.appBuild, (err, fileNames) => {
 // Create the production build and print the deployment instructions.
 function build(/* previousSizeMap */) {
   console.log('Creating an optimized production build...');
-  webpack(config).run((err) => {
+  webpack(config).run((err, stats) => {
     if (err) {
       console.error('Failed to create a production build. Reason:');
       console.error(err.message || err);
       process.exit(1);
+    }
+
+    if (stats.hasErrors()) {
+      console.error('Failed to create a production build. Compilation errors:');
+      const info = stats.toJson();
+
+      console.error(info.errors);
+      process.exit(1);
+    }
+
+    if (stats.hasWarnings()) {
+      console.warn('Compiled with warnings:');
+      const info = stats.toJson();
+
+      console.warn(info.warnings);
     }
 
     console.log(chalk.green('Compiled successfully.'));

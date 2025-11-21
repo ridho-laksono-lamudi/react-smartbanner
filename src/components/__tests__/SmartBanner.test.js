@@ -40,6 +40,7 @@ describe('SmartBanner', function() {
         ..._props,
       };
 
+      // eslint-disable-next-line react/jsx-props-no-spreading
       return mount(<SmartBanner {...props} />, {
         attachTo: document.getElementById('root'),
       });
@@ -107,7 +108,7 @@ describe('SmartBanner', function() {
       subject.instance().close();
 
       expect(window.document.querySelector('html').classList).not.toContain(
-        'smartbanner-show'
+        'smartbanner-show',
       );
       expect(cookie.set).toBeCalledWith('smartbanner-closed', 'true', {
         path: '/',
@@ -128,7 +129,7 @@ describe('SmartBanner', function() {
       subject.instance().install();
 
       expect(window.document.querySelector('html').classList).not.toContain(
-        'smartbanner-show'
+        'smartbanner-show',
       );
       expect(cookie.set).toBeCalledWith('smartbanner-installed', 'true', {
         path: '/',
@@ -165,13 +166,13 @@ describe('SmartBanner', function() {
 
     subject.unmount();
     expect(window.document.querySelector('html').classList).not.toContain(
-      'smartbanner-show'
+      'smartbanner-show',
     );
     expect(window.document.querySelector('html').classList).not.toContain(
-      'smartbanner-margin-top'
+      'smartbanner-margin-top',
     );
     expect(window.document.querySelector('html').classList).not.toContain(
-      'smartbanner-margin-bottom'
+      'smartbanner-margin-bottom',
     );
   });
 

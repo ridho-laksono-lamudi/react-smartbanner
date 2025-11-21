@@ -10,6 +10,7 @@ const paths = require('./paths');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const getClientEnvironment = require('./env');
@@ -54,14 +55,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        enforce: 'pre',
-        include: paths.appSrc,
-        use: {
-          loader: 'eslint-loader',
-        },
-      },
-      {
         exclude: [
           /\.html$/,
           /\.(js|jsx)$/,
@@ -87,9 +80,21 @@ module.exports = {
       {
         test: /\.scss$/,
         use: [
-          'style-loader?sourceMap',
+          {
+            loader: 'style-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
           'css-loader',
-          'sass-loader?outputStyle=expanded',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                outputStyle: 'expanded',
+              },
+            },
+          },
         ],
       },
       {
@@ -104,7 +109,9 @@ module.exports = {
       /^\.\/main\.css$/,
       '../dist/main.css'
     ),
-    new CopyWebpackPlugin([{ from: 'src/icon.png', to: './' }]),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'src/icon.png', to: './' }],
+    }),
     new HtmlWebpackPlugin({
       inject: true,
       template: paths.appHtml,
@@ -115,11 +122,12 @@ module.exports = {
     new webpack.DefinePlugin(env),
     new webpack.HotModuleReplacementPlugin(),
     new CaseSensitivePathsPlugin(),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      context: paths.appSrc,
+      emitWarning: true,
+      failOnError: false,
+    }),
     new WatchMissingNodeModulesPlugin(paths.appNodeModules),
   ],
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
 };
